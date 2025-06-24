@@ -1,7 +1,7 @@
-package com.taskmanager.demotaskmanager.jwt;
+package com.taskmanager.demotaskmanager.security;
 
 
-import jakarta.servlet.Filter;
+import com.taskmanager.demotaskmanager.model.User;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,26 +32,26 @@ public class JwtAuthfilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
 
         final String authHeader = request.getHeader("Authorization");
-        final String jwt;
-        final String username;
+
+        final String jwt = authHeader.substring(7);
+        final String email = jwtService.extractEmail(jwt);
 
 
         if(authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
-        jwt = authHeader.substring(7);
-        username = jwtService.extractUsername(jwt);
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null){
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-            if (jwtService.isTokenValid(jwt,(com.taskmanager.demotaskmanager.model.User) userDetails)){
-                UsernamePasswordAuthenticationToken authentication =
+        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null){
+            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+
+            if (jwtService.isTokenValid(jwt,(User) userDetails)){
+                UsernamePasswordAuthenticationToken authtoken =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                authtoken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authtoken);
             }
         }
 
@@ -59,6 +59,6 @@ public class JwtAuthfilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
 
         System.out.println("JWT Token: " + jwt);
-        System.out.println("User Name : " + username);
+        System.out.println("User Name : " + email);
     }
 }

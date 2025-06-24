@@ -1,22 +1,21 @@
-package com.taskmanager.demotaskmanager.auth;
+package com.taskmanager.demotaskmanager.service;
 
-import com.taskmanager.demotaskmanager.dto.LoginRequest;
-import com.taskmanager.demotaskmanager.dto.RegisterRequest;
-import com.taskmanager.demotaskmanager.jwt.JwtService;
+import com.taskmanager.demotaskmanager.auth.AuthenticationResponse;
+import com.taskmanager.demotaskmanager.auth.LoginRequest;
+import com.taskmanager.demotaskmanager.auth.RegisterRequest;
+import com.taskmanager.demotaskmanager.security.JwtService;
 import com.taskmanager.demotaskmanager.model.Role;
 import com.taskmanager.demotaskmanager.model.User;
 import com.taskmanager.demotaskmanager.model.UserStatus;
 import com.taskmanager.demotaskmanager.repository.UserRepository;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor(onConstructor_ = {@Autowired})
+@RequiredArgsConstructor
 public class AuthenticationService {
 
 
@@ -41,7 +40,7 @@ public class AuthenticationService {
                 .email(registerRequest.getEmail())
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
                 .role(role)
-                .status(UserStatus.ACTIVE)
+                .status(UserStatus.PENDING)
                 .build();
 
         User savedUser = userRepository.save(user);

@@ -13,6 +13,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -40,7 +41,7 @@ import java.util.List;
 
     @Override
     public TaskResponseDto updateTask(Long id ,TaskRequestDto requestDto, String email) {
-        Task task = (Task) getUserTasks(email);
+        Task task = getUserTask(id,email);
 
         task.setTitle(requestDto.getTitle());
         task.setDescription(requestDto.getDescription());
@@ -54,7 +55,7 @@ import java.util.List;
     // task silmek
     @Override
     public void deleteTask(Long id , String email) {
-        Task task = (Task) getUserTasks(email);
+        Task task = getUserTask(id,email);
         taskRepository.delete(task);
 
     }
@@ -100,5 +101,30 @@ import java.util.List;
                 .build();
 
         return mapToDto(taskRepository.save(task));
+    }
+
+    // Admin üçün bütün task-lar
+    @Override
+    public List<TaskResponseDto> getAllTasksForAdmin(Long id) {
+        List<Task> tasks = taskRepository.findAll();
+        return tasks.stream()
+                .map(this::mapToDto)
+                .toList();
+    }
+
+
+    // Task axtarışı (title əsasında)
+    @Override
+    public List<TaskResponseDto> searchByTitle(String title) {
+        return null;
+    }
+
+    // Müəyyən tarixdən əvvəlki due date-li task-lar
+    @Override
+    public List<TaskResponseDto> findDueTasksBefore(Date date) {
+        return taskRepository.findByDuedateBefore(date)
+                .stream()
+                .map(this::mapToDto)
+                .toList();
     }
 }

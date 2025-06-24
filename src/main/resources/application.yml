@@ -9,3 +9,8 @@ spring:
     show-sql: true
     open-in-view: false
 
+  application:
+    jwt:secret: {wJtSuPeRSeCrEtK3YWithLongRandomSafeChars_!#%$^&*123456 , expiration: 86400000 }
+
+
+

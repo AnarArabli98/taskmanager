@@ -16,7 +16,6 @@ public class TaskResponseDto {
     private String title;
     private String description;
 
-    @Enumerated(EnumType.STRING)
     private TaskStatus status;
 
     private Date dueDate;

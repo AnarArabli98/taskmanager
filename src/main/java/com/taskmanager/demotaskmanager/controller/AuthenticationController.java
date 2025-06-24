@@ -1,16 +1,17 @@
-package com.taskmanager.demotaskmanager.auth;
+package com.taskmanager.demotaskmanager.controller;
 
-import com.taskmanager.demotaskmanager.dto.LoginRequest;
-import com.taskmanager.demotaskmanager.dto.RegisterRequest;
+import com.taskmanager.demotaskmanager.auth.AuthenticationResponse;
+import com.taskmanager.demotaskmanager.auth.LoginRequest;
+import com.taskmanager.demotaskmanager.auth.RegisterRequest;
+import com.taskmanager.demotaskmanager.service.AuthenticationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
-@RequiredArgsConstructor(onConstructor_ = {@Autowired})
+@RequiredArgsConstructor
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;

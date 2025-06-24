@@ -1,5 +1,6 @@
 package com.taskmanager.demotaskmanager.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,6 +27,7 @@ public class Task {
     private TaskStatus status;
 
     @Column(name = "due_date")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date duedate;
 
 

@@ -1,4 +1,4 @@
-package com.taskmanager.demotaskmanager.config;
+package com.taskmanager.demotaskmanager.security;
 
 import com.taskmanager.demotaskmanager.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +16,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("İstifadəçi tapılmadı: " + username));
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("İstifadəçi tapılmadı: " + email));
     }
 }
