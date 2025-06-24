@@ -8,6 +8,7 @@ import com.taskmanager.demotaskmanager.model.User;
 import com.taskmanager.demotaskmanager.repository.TaskRepository;
 import com.taskmanager.demotaskmanager.repository.UserRepository;
 import com.taskmanager.demotaskmanager.service.TaskService;
+import com.taskmanager.demotaskmanager.utils.TaskMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,19 +23,27 @@ import java.util.List;
 
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
-
+    private final TaskMapper taskMapper;
 
 
     //  Entity → DTO
 
     private TaskResponseDto mapToDto(Task task) {
-        return TaskResponseDto.builder()
-                .id(task.getId())
-                .title(task.getTitle())
-                .description(task.getDescription())
-                .status(task.getStatus())
-                .dueDate(task.getDuedate())
-                .build();
+        return taskMapper.toDto(task);
+    }
+
+    @Override
+    public TaskResponseDto createTask(TaskRequestDto requestDto, String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Istifadeci tapilmadi"));
+
+        TaskStatus taskStatus = requestDto.getStatus() != null
+                ? requestDto.getStatus()
+                : TaskStatus.TODO;
+
+        Task task = taskMapper.toEntity(requestDto,user);
+        return taskMapper.toDto(taskRepository.save(task));
+
     }
 
     //  Task-ı redaktə et
@@ -84,28 +93,11 @@ import java.util.List;
                 .toList();
     }
 
-    @Override
-    public TaskResponseDto createTask(TaskRequestDto requestDto, String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Istifadeci tapilmadi"));
 
-        TaskStatus taskStatus = requestDto.getStatus() != null
-                ? requestDto.getStatus()
-                : TaskStatus.TODO;
-
-        Task task = Task.builder()
-                .title(requestDto.getTitle())
-                .description(requestDto.getDescription())
-                .status(taskStatus)
-                .user(user)
-                .build();
-
-        return mapToDto(taskRepository.save(task));
-    }
 
     // Admin üçün bütün task-lar
     @Override
-    public List<TaskResponseDto> getAllTasksForAdmin(Long id) {
+    public List<TaskResponseDto> getAllTasksForAdmin() {
         List<Task> tasks = taskRepository.findAll();
         return tasks.stream()
                 .map(this::mapToDto)
@@ -116,7 +108,10 @@ import java.util.List;
     // Task axtarışı (title əsasında)
     @Override
     public List<TaskResponseDto> searchByTitle(String title) {
-        return null;
+        return taskRepository.findByTitleContainsIgnoreCase(title)
+                .stream()
+                .map(this::mapToDto)
+                .toList();
     }
 
     // Müəyyən tarixdən əvvəlki due date-li task-lar

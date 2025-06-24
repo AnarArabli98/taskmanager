@@ -7,11 +7,14 @@ import com.taskmanager.demotaskmanager.dto.TaskResponseDto;
 import com.taskmanager.demotaskmanager.service.TaskService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -37,6 +40,13 @@ public class TaskController {
         return ResponseEntity.ok(tasks);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/all")
+    public ResponseEntity<List<TaskResponseDto>> getAllTasksForAdmin() {
+        return ResponseEntity.ok(taskService.getAllTasksForAdmin());
+    }
+
+
     @PutMapping("/{id}")
     public ResponseEntity<TaskResponseDto> updateTask(@PathVariable Long id
             ,@RequestBody @Valid TaskRequestDto requestDto
@@ -45,6 +55,11 @@ public class TaskController {
         TaskResponseDto updateTaskresponseDto = taskService.updateTask(id, requestDto, principal.getName());
         return ResponseEntity.ok(updateTaskresponseDto);
 
+    }
+
+    @GetMapping("/due")
+    public ResponseEntity<List<TaskResponseDto>> getDueTasks(@RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
+        return ResponseEntity.ok(taskService.findDueTasksBefore(date));
     }
 
     @DeleteMapping("/{id}")

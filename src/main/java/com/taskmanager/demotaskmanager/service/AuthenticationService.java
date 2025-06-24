@@ -40,7 +40,7 @@ public class AuthenticationService {
                 .email(registerRequest.getEmail())
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
                 .role(role)
-                .status(UserStatus.PENDING)
+                .status(UserStatus.ACTIVE)
                 .build();
 
         User savedUser = userRepository.save(user);

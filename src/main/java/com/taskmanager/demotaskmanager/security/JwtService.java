@@ -11,18 +11,19 @@ import java.security.Key;
 import java.util.Date;
 
 @Service
-
 public class JwtService {
 
 
 
     @Value("${application.jwt.secret}")
-    private String JWT_SECRET;
+    private String secretKey;
 
+    @Value("${application.jwt.expiration}")
+    private long expiration;
 
 
     private Key getSigningKey() {
-        byte[] keyBytes = JWT_SECRET.getBytes(StandardCharsets.UTF_8);
+        byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
 
         return Keys.hmacShaKeyFor(keyBytes);
     }
@@ -33,7 +34,7 @@ public class JwtService {
                 .claim("userId",user.getId())
                 .claim("role",user.getRole().name())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 *60))
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSigningKey(),SignatureAlgorithm.HS256)
                 .compact();
     }

@@ -9,8 +9,12 @@ spring:
     show-sql: true
     open-in-view: false
 
-  application:
-    jwt:secret: {wJtSuPeRSeCrEtK3YWithLongRandomSafeChars_!#%$^&*123456 , expiration: 86400000 }
+
+
+application:
+    jwt:
+      secret: mySuperSecureJwtSecretKeyHere1234567890
+      expiration: 86400000
 
 
 

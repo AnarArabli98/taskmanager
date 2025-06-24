@@ -13,7 +13,7 @@ public interface TaskService {
     List<TaskResponseDto> getUserTasks(String email);
     TaskResponseDto updateTask(Long id,TaskRequestDto taskRequestDto,String email);
     TaskResponseDto createTask(TaskRequestDto requestDto, String email);
-    List<TaskResponseDto> getAllTasksForAdmin(Long id);
+    List<TaskResponseDto> getAllTasksForAdmin();
     List<TaskResponseDto> searchByTitle(String title);
     List<TaskResponseDto> findDueTasksBefore(Date date);
 }

@@ -5,6 +5,7 @@ import com.taskmanager.demotaskmanager.security.JwtAuthfilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -18,6 +19,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.bind.annotation.GetMapping;
+
+import java.security.Principal;
 
 @Configuration
 @EnableWebSecurity
@@ -44,6 +48,11 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthfilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
 
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<String> whoAmI(Principal principal) {
+        return ResponseEntity.ok("Login olmuş istifadəçi: " + principal.getName());
     }
 
     @Bean
