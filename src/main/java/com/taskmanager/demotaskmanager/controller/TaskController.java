@@ -46,6 +46,10 @@ public class TaskController {
         return ResponseEntity.ok(taskService.getAllTasksForAdmin());
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<TaskResponseDto>> searchTasks(@RequestParam String title) {
+        return ResponseEntity.ok(taskService.searchByTitle(title));
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<TaskResponseDto> updateTask(@PathVariable Long id

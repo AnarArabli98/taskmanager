@@ -1,4 +1,10 @@
 package com.taskmanager.demotaskmanager.exception;
 
-public class UserNotFoundException {
+import org.aspectj.bridge.IMessage;
+
+public class UserNotFoundException extends RuntimeException {
+
+    public UserNotFoundException(String message) {
+        super(message);
+    }
 }

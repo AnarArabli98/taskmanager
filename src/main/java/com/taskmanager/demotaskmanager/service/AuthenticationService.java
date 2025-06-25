@@ -3,6 +3,8 @@ package com.taskmanager.demotaskmanager.service;
 import com.taskmanager.demotaskmanager.auth.AuthenticationResponse;
 import com.taskmanager.demotaskmanager.auth.LoginRequest;
 import com.taskmanager.demotaskmanager.auth.RegisterRequest;
+import com.taskmanager.demotaskmanager.exception.EmailAlreadyExistsException;
+import com.taskmanager.demotaskmanager.exception.UserNotFoundException;
 import com.taskmanager.demotaskmanager.security.JwtService;
 import com.taskmanager.demotaskmanager.model.Role;
 import com.taskmanager.demotaskmanager.model.User;
@@ -27,10 +29,10 @@ public class AuthenticationService {
 
     public AuthenticationResponse register(RegisterRequest registerRequest) {
         if (userRepository.existsByUsername(registerRequest.getName())) {
-            throw new RuntimeException("Username artıq mövcuddur");
+            throw new UserNotFoundException("Username artıq mövcuddur");
         }
         if (userRepository.existsByEmail(registerRequest.getEmail())) {
-            throw new RuntimeException("Email artiq istifade olunur");
+            throw new EmailAlreadyExistsException("Email artiq istifade olunur");
         }
 
         Role role = userRepository.count() == 0 ? Role.ADMIN : Role.USER;

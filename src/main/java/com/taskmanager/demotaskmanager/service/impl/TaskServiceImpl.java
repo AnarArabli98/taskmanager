@@ -2,6 +2,7 @@ package com.taskmanager.demotaskmanager.service.impl;
 
 import com.taskmanager.demotaskmanager.dto.TaskRequestDto;
 import com.taskmanager.demotaskmanager.dto.TaskResponseDto;
+import com.taskmanager.demotaskmanager.exception.UserNotFoundException;
 import com.taskmanager.demotaskmanager.model.Task;
 import com.taskmanager.demotaskmanager.model.TaskStatus;
 import com.taskmanager.demotaskmanager.model.User;
@@ -35,7 +36,7 @@ import java.util.List;
     @Override
     public TaskResponseDto createTask(TaskRequestDto requestDto, String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Istifadeci tapilmadi"));
+                .orElseThrow(() -> new UserNotFoundException("Istifadeci tapilmadi"+email));
 
         TaskStatus taskStatus = requestDto.getStatus() != null
                 ? requestDto.getStatus()
@@ -85,7 +86,7 @@ import java.util.List;
     @Override
     public List<TaskResponseDto> getUserTasks(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Istifadeci tapilmadi"));
+                .orElseThrow(() -> new UserNotFoundException("İstifadəçi tapılmadı: " + email));
 
         return taskRepository.findAllByUser(user)
                 .stream()
