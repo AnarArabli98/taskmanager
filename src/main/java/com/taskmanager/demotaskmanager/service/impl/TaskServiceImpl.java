@@ -90,7 +90,7 @@ import java.util.List;
 
         return taskRepository.findAllByUser(user)
                 .stream()
-                .map(this::mapToDto)
+                .map(taskMapper::toDto)
                 .toList();
     }
 
@@ -101,7 +101,7 @@ import java.util.List;
     public List<TaskResponseDto> getAllTasksForAdmin() {
         List<Task> tasks = taskRepository.findAll();
         return tasks.stream()
-                .map(this::mapToDto)
+                .map(taskMapper::toDto)
                 .toList();
     }
 
@@ -111,7 +111,7 @@ import java.util.List;
     public List<TaskResponseDto> searchByTitle(String title) {
         return taskRepository.findByTitleContainsIgnoreCase(title)
                 .stream()
-                .map(this::mapToDto)
+                .map(taskMapper::toDto)
                 .toList();
     }
 
@@ -120,7 +120,7 @@ import java.util.List;
     public List<TaskResponseDto> findDueTasksBefore(Date date) {
         return taskRepository.findByDuedateBefore(date)
                 .stream()
-                .map(this::mapToDto)
+                .map(taskMapper::toDto)
                 .toList();
     }
 }

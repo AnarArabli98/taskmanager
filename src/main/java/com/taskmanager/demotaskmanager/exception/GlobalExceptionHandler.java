@@ -37,7 +37,7 @@ public class GlobalExceptionHandler {
         ex.getBindingResult().getFieldErrors().forEach(error -> {
             errors.put(error.getField(), error.getDefaultMessage());
         });
-        return ResponseEntity.badRequest().body(errors.toString());
+            return new ResponseEntity<>(errors.toString(), HttpStatus.BAD_REQUEST);
     }
 
     // Digər bütün xətalar üçün ümumi cavab

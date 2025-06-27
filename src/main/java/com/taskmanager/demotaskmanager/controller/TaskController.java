@@ -5,6 +5,9 @@ package com.taskmanager.demotaskmanager.controller;
 import com.taskmanager.demotaskmanager.dto.TaskRequestDto;
 import com.taskmanager.demotaskmanager.dto.TaskResponseDto;
 import com.taskmanager.demotaskmanager.service.TaskService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -20,10 +23,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/tasks")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "BearerAuth") // Swagger UI token tələb etsin
+@Tag(name = "Tasks", description = "Task əməliyyatları")
 public class TaskController {
 
     private final TaskService taskService;
 
+
+    @Operation(summary = "Yeni task yarat", description = "Bu endpoint yeni task əlavə edir")
     @PostMapping("/create")
     public ResponseEntity<TaskResponseDto> createTask(@RequestBody @Valid TaskRequestDto requestDto,
                                                       Principal principal) {
@@ -48,7 +55,8 @@ public class TaskController {
 
     @GetMapping("/search")
     public ResponseEntity<List<TaskResponseDto>> searchTasks(@RequestParam String title) {
-        return ResponseEntity.ok(taskService.searchByTitle(title));
+        List<TaskResponseDto> tasks = taskService.getUserTasks(title);
+        return ResponseEntity.ok(tasks);
     }
 
     @PutMapping("/{id}")

@@ -38,6 +38,14 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth-> auth
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/v3/api-docs.yaml",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/swagger-resources/**",
+                                "/webjars/**"
+                        ).permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/users/**").hasAnyRole("ADMIN", "USER")
@@ -50,10 +58,6 @@ public class SecurityConfig {
 
     }
 
-    @GetMapping("/me")
-    public ResponseEntity<String> whoAmI(Principal principal) {
-        return ResponseEntity.ok("Login olmuş istifadəçi: " + principal.getName());
-    }
 
     @Bean
     public AuthenticationProvider authenticationProver() {
