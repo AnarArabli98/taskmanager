@@ -40,6 +40,7 @@ public class TaskController {
     }
 
     //İstifadəçinin öz tasklarını əldə et
+    @Operation(summary = "Bütün tasklarını gətir", description = "Aktiv istifadəçinin bütün tasklarını qaytarır")
     @GetMapping
     public ResponseEntity<List<TaskResponseDto>> getAll(Principal principal) {
 
@@ -59,6 +60,7 @@ public class TaskController {
         return ResponseEntity.ok(tasks);
     }
 
+    @Operation(summary = "Task redaktə et", description = "ID-yə görə task-ı yenilə")
     @PutMapping("/{id}")
     public ResponseEntity<TaskResponseDto> updateTask(@PathVariable Long id
             ,@RequestBody @Valid TaskRequestDto requestDto
@@ -74,6 +76,8 @@ public class TaskController {
         return ResponseEntity.ok(taskService.findDueTasksBefore(date));
     }
 
+
+    @Operation(summary = "Task sil", description = "ID-yə görə task sil")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteTask(@PathVariable Long id, Principal principal) {
         taskService.deleteTask(id, principal.getName());

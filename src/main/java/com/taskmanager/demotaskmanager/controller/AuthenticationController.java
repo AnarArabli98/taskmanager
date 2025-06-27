@@ -4,6 +4,9 @@ import com.taskmanager.demotaskmanager.auth.AuthenticationResponse;
 import com.taskmanager.demotaskmanager.auth.LoginRequest;
 import com.taskmanager.demotaskmanager.auth.RegisterRequest;
 import com.taskmanager.demotaskmanager.service.AuthenticationService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,9 +19,18 @@ import java.security.Principal;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@Tag(name = "Authentication", description = "Qeydiyyat və daxil olma əməliyyatları")
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
+
+    @Operation(summary = "Yeni istifadəçi qeydiyyatı", description = "Yeni istifadəçi qeydiyyatdan keçir və JWT token alır")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Qeydiyyat uğurlu oldu"),
+            @ApiResponse(responseCode = "400", description = "Yanlış məlumat daxil edilib"),
+            @ApiResponse(responseCode = "409", description = "Email və ya username artıq mövcuddur")
+    })
+
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> registerUser(@Valid @RequestBody RegisterRequest requestDto) {
@@ -45,7 +57,7 @@ public class AuthenticationController {
         return ResponseEntity.ok("Login olmuş istifadəçi: " + principal.getName());
     }
 
-
+    @Operation(summary = "İstifadəçi daxil ol", description = "İstifadəçi email və şifrə ilə daxil olur və JWT token alır")
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> login(@RequestBody @Valid LoginRequest loginRequest) {
         AuthenticationResponse response = authenticationService.login(loginRequest);
